@@ -1,0 +1,18 @@
+CONNECTED=`nmcli -t -f device,connection -c no device status | grep wlp3s0 | cut -d: -f2`
+COLOR='#00FF00'
+
+if [ $CONNECTED = '--' ]; then
+  TEXT='No SSID'
+  COLOR='#FF0000'
+else
+  TEXT=$CONNECTED
+fi
+
+echo $TEXT
+echo $TEXT
+echo $COLOR
+
+case $BLOCK_BUTTON in
+  1) nmcli -t -f SSID device wifi list | grep -v "\-\-" | awk '!a[$0]++'| dmenu | xargs -i sh -c 'R=$(nmcli con up "{}" 2>&1) || (i3-nagbar -m "$R" && nmcli device wifi connect "{}")';;
+  3) nm-connection-editor
+esac
